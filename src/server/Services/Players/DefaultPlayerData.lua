@@ -9,10 +9,6 @@ export type DataTemplate = {
 }
 
 export type DataInstance = {
-	LastBlockChoosen: string,
-	DashAmount: number,
-	DashEffect: string,
-	IsDasing: boolean,
 	Keybinds: {},
 }
 
@@ -20,9 +16,6 @@ local DefaultPlayerData = {}
 
 DefaultPlayerData.Instances = {
     FinishedLoading = false,
-	DashAmount = 0,
-	DashEffect = '',
-	IsDashing = false,
 	Keybinds = {},
 }
 
@@ -32,13 +25,7 @@ DefaultPlayerData.Template = {
 			PC = 'M1',
 			Xbox = 'B Button'
 		},
-		Dash = {
-			PC = 'Q',
-			Xbox = 'Y Button'
-		},
 	},
-	DashEffect = 'Trail',
-
 }
 
 function DefaultPlayerData.GetInstanceDataSyncedWithSavedData(dataStoreData: DataTemplate): DataInstance

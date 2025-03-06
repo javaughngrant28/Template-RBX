@@ -7,9 +7,11 @@ local PlayerAPI = require(game.ServerScriptService.Services.Players.PlayerAPI)
 local PLayerLoadedSignal = PlayerAPI.GetPlayerLoadedSignal()
 
 local function onPlayerAdded(player: Player)
-    local playerLoaded: Instance = player:WaitForChild('FinishedLoading',20)
+    local playerLoaded = player:WaitForChild('FinishedLoading',20):: BoolValue
     if not playerLoaded then return end
 
+    playerLoaded.Value = true
+    
     task.wait(0.2)
     PLayerLoadedSignal:Fire(player)
 end
