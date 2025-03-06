@@ -2,7 +2,8 @@
 local MaidModule = require(game.ReplicatedStorage.Shared.Modules.Maid)
 local ScreenGuiUtil = require(game.ReplicatedStorage.Shared.Utils.ScreenGuiUtil)
 
-local DefaultGUI = game.ReplicatedStorage.Assets.ScreenGui.TitleCountdown
+local GUI_NAME = 'TitleCountdown'
+local DefaultGUI = game.ReplicatedStorage.Assets.ScreenGui[GUI_NAME]
 
 local TitleCountdown = {}
 
@@ -30,6 +31,7 @@ function TitleCountdown:_Start()
     assert(screenGui and screenGui:IsA("ScreenGui"), `Invalid ScreenGui provided: {screenGui}`)
 
     local guiClone = screenGui:Clone()
+    screenGui.Name = GUI_NAME
     self._MAID['GUI CLONE'] = guiClone
 
     if self.__TITLE then
@@ -54,6 +56,7 @@ end
 function TitleCountdown:Destroy()
     if not self or not self._MAID then return end
     self._MAID:DoCleaning()
+    ScreenGuiUtil.RemoveFromAllPlayers(GUI_NAME)
     for key, _ in pairs(self) do
         self[key] = nil
     end
