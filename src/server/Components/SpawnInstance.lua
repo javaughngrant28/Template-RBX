@@ -45,9 +45,9 @@ local function GetRandomPartFromFolder(folder: Folder): BasePart
     return part
 end
 
-local Spawn = {}
+local SpawnInstance = {}
 
-function Spawn.InPart(instance: Model | BasePart, part: BasePart)
+function SpawnInstance.InPart(instance: Model | BasePart, part: BasePart)
     local spawnCFrame = GetCFrameFromPart(part)
     
     if instance:IsA("Model") then
@@ -57,31 +57,27 @@ function Spawn.InPart(instance: Model | BasePart, part: BasePart)
     end
 end
 
-function Spawn.AtRandomPartInFolder(instance: Model | BasePart, folder: Folder)
+function SpawnInstance.AtRandomPartInFolder(instance: Model | BasePart, folder: Folder)
     assert(folder and folder:IsA('Folder'), "Invalid folder")
     
     local part = GetRandomPartFromFolder(folder)
-    Spawn.InPart(instance, part)
+    SpawnInstance.InPart(instance, part)
 end
 
-function Spawn.CharacterInPart(player: Player, part: BasePart): Model
-    RemoveCharacter(player)
-    
-    local character = LoadCharacter(player)
-    Spawn.InPart(character, part)
+function SpawnInstance.CharacterInPart(player: Player, part: BasePart): Model
+    local character = player.Character or LoadCharacter(player)
+    SpawnInstance.InPart(character, part)
 
     return character
 end
 
-function Spawn.CharacterAtRandomPartInFolder(player: Player, folder: Folder): Model
+function SpawnInstance.CharacterAtRandomPartInFolder(player: Player, folder: Folder): Model
     assert(folder and folder:IsA('Folder'), "Invalid folder")
 
-    RemoveCharacter(player)
-    
-    local character = LoadCharacter(player)
-    Spawn.AtRandomPartInFolder(character, folder)
+    local character = player.Character or LoadCharacter(player)
+    SpawnInstance.AtRandomPartInFolder(character, folder)
 
     return character
 end
 
-return Spawn
+return SpawnInstance
