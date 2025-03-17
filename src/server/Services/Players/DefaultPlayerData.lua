@@ -1,15 +1,20 @@
 
 export type DataTemplate = {
 	Keybinds: {
-		Attack: {
+		[string]: {
 			PC: string,
-			Xbox: string
+			Xbox: string,
 		}
 	},
 }
 
 export type DataInstance = {
-	Keybinds: {},
+	Keybinds: {
+		[string]: {
+			PC: string,
+			Xbox: string,
+		}
+	},
 }
 
 local DefaultPlayerData = {}
