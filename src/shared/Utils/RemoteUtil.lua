@@ -12,14 +12,15 @@
 ]]
 
 
-type ClientCallBack = (any: any)->()
-type ServerCallBack = (player: Player,any: any)->()
-
+export type ClientCallBack = (any: any?)->()
+export type ServerCallBack = (player: Player,any: any?)->()
 
 local RunService = game:GetService('RunService')
 
 local FOLDER_NAME = 'NETWORK EVENTS'
 local GENERAL_REMOTE_NAME = 'GENERAL'
+
+local connections: { [ClientCallBack | ServerCallBack]: RBXScriptConnection } = {}
 
 local function CreateFolder(name: string?, location: Instance?): Folder
 	local folder = Instance.new('Folder')
@@ -80,17 +81,55 @@ local function ConnectCallBack(eventName: string,remote: RemoteEvent, callback: 
 			callback(...)
 		end
 	end
+	local connection
 	
 	if RunService:IsServer() then
-		remote.OnServerEvent:Connect(function(player: Player,_eventName: string, ...)
+		connection = remote.OnServerEvent:Connect(function(player: Player,_eventName: string, ...)
 			onConnect(_eventName,player,...)
 		end)
 	else
-		remote.OnClientEvent:Connect(onConnect)
+		connection = remote.OnClientEvent:Connect(onConnect)
 	end
+
+	if connections[callback] then
+		connections[callback]:Disconnect()
+	end
+
+	connections[callback] = connection
 end
 
 local EventUtil = {}
+
+EventUtil._FOLDER_NAME = FOLDER_NAME
+
+
+--PRIVIT METHODS
+function EventUtil._ConnectCallBack(remote: RemoteEvent, callback: (any)->(),eventName: string?)
+	local eventName = eventName or ''
+	ConnectCallBack(eventName,remote,callback)
+end
+function EventUtil._CreateRemote(parent: Instance, name: string): RemoteEvent
+	local remoteAreadyExits = parent:FindFirstChild(name)
+	assert(
+		not remoteAreadyExits and remoteAreadyExits:IsA('RemoteEvent'),
+		`{name} Remote Aready Exists Inside {parent}`
+	)
+
+	return CreateRemote(parent,name)
+end
+
+function EventUtil._CreateFolder(folderName: string): Folder
+	local folderLocation = game.ReplicatedStorage:FindFirstChild(FOLDER_NAME) :: Folder
+	assert(folderLocation,`{folderName} not found in ReplicatedStorage`)
+	
+	local istanceAlreadyExists = folderLocation:FindFirstChild(folderName)
+	assert(
+		not istanceAlreadyExists and istanceAlreadyExists:IsA('Folder'), 
+		`{folderName} Folder Already Exists`
+	)
+	return CreateFolder(folderName,folderLocation)
+end
+
 
 --- SERVER METHODS ---
 
@@ -141,5 +180,12 @@ function EventUtil.FireServer(eventName: string, ...)
 	remote:FireServer(eventName,...)
 end
 
+function EventUtil.Destroy(callback: ClientCallBack | ServerCallBack)
+	if connections[callback] then
+		connections[callback]:Disconnect()
+		connections[callback] = nil
+		print('Removed Connection:',callback)
+	end
+end
 
 return EventUtil
