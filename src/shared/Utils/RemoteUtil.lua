@@ -76,6 +76,11 @@ local function GetRemote(folderName: string, remoteName: string?): RemoteEvent?
 end
 
 local function ConnectCallBack(eventName: string,remote: RemoteEvent, callback: (any)->())
+	
+	if connections[callback] then
+		connections[callback]:Disconnect()
+	end
+	
 	local function onConnect(_eventName: string,...)
 		if _eventName == eventName then
 			callback(...)
@@ -111,7 +116,7 @@ end
 function EventUtil._CreateRemote(parent: Instance, name: string): RemoteEvent
 	local remoteAreadyExits = parent:FindFirstChild(name)
 	assert(
-		not remoteAreadyExits and remoteAreadyExits:IsA('RemoteEvent'),
+		remoteAreadyExits and remoteAreadyExits:IsA('RemoteEvent'),
 		`{name} Remote Aready Exists Inside {parent}`
 	)
 
@@ -124,7 +129,7 @@ function EventUtil._CreateFolder(folderName: string): Folder
 	
 	local istanceAlreadyExists = folderLocation:FindFirstChild(folderName)
 	assert(
-		not istanceAlreadyExists and istanceAlreadyExists:IsA('Folder'), 
+		istanceAlreadyExists and istanceAlreadyExists:IsA('Folder'), 
 		`{folderName} Folder Already Exists`
 	)
 	return CreateFolder(folderName,folderLocation)

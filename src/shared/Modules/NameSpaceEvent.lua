@@ -114,7 +114,10 @@ function NameSpaceEvent:_FindRemote(methodName: string): RemoteEvent?
 			remoteEvent = remote
 		end
 		
-		self._EVENTS[methodName] = remoteEvent
+		if remoteEvent then
+			self._EVENTS[methodName] = remoteEvent
+		end
+		
 		return remoteEvent
 	end
 end
