@@ -8,13 +8,13 @@ type EventNames = {string}
 export type Client = {
 	new: (nameSpace: string,eventNames: EventNames)->Client,
 	OnClient:(Client,methodName: string,callBack: RemoteUtil.ClientCallBack)->(),
-	FireServer: (Client,methodName: string,data:any?)->(),
+	FireServer: (Client,methodName: string,...any?)->(),
 }
 
 export type Server = {
 	new: (nameSpace: string,eventNames: EventNames)->Server,
 	OnServer:(Server,methodName: string,callBack: RemoteUtil.ServerCallBack)->(),
-	FireClient: (Server,methodName: string,player: Player,data:any?)->(),
+	FireClient: (Server,methodName: string,player: Player,...any?)->(),
 }
 
 
