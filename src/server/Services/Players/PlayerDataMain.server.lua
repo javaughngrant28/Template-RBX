@@ -5,7 +5,7 @@ local DataStore = DataStoreService:GetDataStore('Data_0')
 local PlayerDataAPI = require(game.ServerScriptService.Services.Players.PlayerDataAPI)
 
 local DefaultPlayerData = require(game.ServerScriptService.Services.Players.DefaultPlayerData)
-local DataToInstance = require(game.ServerScriptService.Modules.DataToInstance)
+local DataToInstance = require(game.ReplicatedStorage.Shared.Modules.DataToInstance)
 
 
 local Players = game:GetService('Players')
