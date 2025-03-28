@@ -12,8 +12,8 @@
 ]]
 
 
-export type ClientCallBack = (any: any?)->()
-export type ServerCallBack = (player: Player,any: any?)->()
+export type ClientCallBack = (...any?)->()
+export type ServerCallBack = (player: Player,...any?)->()
 
 local RunService = game:GetService('RunService')
 
@@ -106,19 +106,19 @@ end
 local EventUtil = {}
 
 EventUtil._FOLDER_NAME = FOLDER_NAME
-
+EventUtil._KEY = 'Open'
 
 --PRIVIT METHODS
 function EventUtil._ConnectCallBack(remote: RemoteEvent, callback: (any)->(),eventName: string?)
-	local eventName = eventName or ''
+	local eventName = eventName or EventUtil._KEY
 	ConnectCallBack(eventName,remote,callback)
 end
 function EventUtil._CreateRemote(parent: Instance, name: string): RemoteEvent
 	local remoteAreadyExits = parent:FindFirstChild(name)
-	assert(
-		remoteAreadyExits and remoteAreadyExits:IsA('RemoteEvent'),
-		`{name} Remote Aready Exists Inside {parent}`
-	)
+
+	if remoteAreadyExits and remoteAreadyExits:IsA('RemoteEvent') then
+		error(`{name} Remote Aready Exists Inside {parent}`)
+	end
 
 	return CreateRemote(parent,name)
 end
@@ -126,12 +126,13 @@ end
 function EventUtil._CreateFolder(folderName: string): Folder
 	local folderLocation = game.ReplicatedStorage:FindFirstChild(FOLDER_NAME) :: Folder
 	assert(folderLocation,`{folderName} not found in ReplicatedStorage`)
-	
+
 	local istanceAlreadyExists = folderLocation:FindFirstChild(folderName)
-	assert(
-		istanceAlreadyExists and istanceAlreadyExists:IsA('Folder'), 
-		`{folderName} Folder Already Exists`
-	)
+
+	if istanceAlreadyExists and istanceAlreadyExists:IsA('Folder') then
+		error(`{folderName} Folder Already Exists`)
+	end
+
 	return CreateFolder(folderName,folderLocation)
 end
 

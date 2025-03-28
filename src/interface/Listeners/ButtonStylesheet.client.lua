@@ -2,7 +2,7 @@ local TweenService = game:GetService("TweenService")
 local Players = game:GetService("Players")
 local SoundUtil = require(game.ReplicatedStorage.Shared.Utils.SoundUtil)
 
-local soundFolder = game.ReplicatedStorage.Assets.Sounds.GUI
+local soundFolder = game.ReplicatedStorage.Assets.Sounds
 
 local Global = {
     ["hover_size"] = Vector3.new(1.1, 1.1, 1),
