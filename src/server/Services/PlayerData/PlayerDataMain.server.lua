@@ -1,17 +1,16 @@
 
+local Players = game:GetService('Players')
 local DataStoreService = game:GetService('DataStoreService')
+
+local DataToInstance = require(game.ReplicatedStorage.Shared.Modules.DataToInstance)
+local PlayerDataAPI = require(game.ServerScriptService.Services.PlayerData.PlayerDataAPI)
+local DefaultPlayerData = require(game.ServerScriptService.Services.PlayerData.DefaultPlayerData)
+
 local DataStore = DataStoreService:GetDataStore('Data_0')
 
-local PlayerDataAPI = require(game.ServerScriptService.Services.Players.PlayerDataAPI)
 
-local DefaultPlayerData = require(game.ServerScriptService.Services.Players.DefaultPlayerData)
-local DataToInstance = require(game.ReplicatedStorage.Shared.Modules.DataToInstance)
-
-
-local Players = game:GetService('Players')
 
 Players.PlayerAdded:Connect(function(player: Player)
-	
 	-- local success: boolean, value: {any}? = pcall(DataStore.GetAsync, DataStore, player.UserId)
 	local success = true
 	local value = nil

@@ -1,6 +1,6 @@
 
 
-local defaultData = require(game.ServerScriptService.Services.Players.DefaultPlayerData)
+local defaultData = require(game.ServerScriptService.Services.PlayerData.DefaultPlayerData)
 local LoadedData: {[string]: defaultData.DataTemplate} = {}
 
 
@@ -12,9 +12,6 @@ end)
 
 
 local function GetData(playerName: string): defaultData.DataTemplate
-    assert(playerName,'Player Name Prop Nil')
-    assert(typeof(playerName) =="string", 'PlayerName Prop must Be a String')
-
     local data =  LoadedData[playerName]
     assert(data,`No Data Found For Player: {playerName}`)
 
@@ -25,16 +22,16 @@ local PlayerDataAPI = {}
 
 function PlayerDataAPI._Set(playerName: string, data: defaultData.DataTemplate)
     local existingData = LoadedData[playerName]
-    
+
     if existingData then 
         error(`Existing Data Found With Same Matching KeyName: {playerName} - {unpack(existingData)}`) 
     end
-    
+
     LoadedData[playerName] = data
 end
 
 function PlayerDataAPI._Get(playerName: string): defaultData.DataTemplate?
-    local existingData = LoadedData[playerName]
+    local existingData = GetData(playerName)
     return existingData
 end
 

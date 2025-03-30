@@ -1,7 +1,6 @@
 
 local Players = game:GetService("Players")
 
-local MaidModule = require(game.ReplicatedStorage.Shared.Modules.Maid)
 local PlayerAPI = require(game.ServerScriptService.Services.Players.PlayerAPI)
 
 local PLayerLoadedSignal = PlayerAPI.GetPlayerLoadedSignal()
@@ -13,8 +12,6 @@ local function onPlayerAdded(player: Player)
     if not playerLoaded then return end
 
     playerLoaded.Value = true
-
-    task.wait(0.2)
     PLayerLoadedSignal:Fire(player)
 end
 
