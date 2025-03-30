@@ -8,7 +8,15 @@
       "Shared": {
         "$className": "Folder",
         "$path": "src/shared"
+      },
+      "Events": {
+        "$className": "Folder",
+        "$path": "src/Events",
+        "GENERAL": {
+          "$className":"RemoteEvent"
+        }
       }
+
     },
 
     "ServerScriptService": {
