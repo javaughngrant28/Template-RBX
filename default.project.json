@@ -14,7 +14,8 @@
         "$path": "src/Events",
         "GENERAL": {
           "$className":"RemoteEvent"
-        }
+        },
+        "$ignoreUnknownInstances": true
       }
 
     },
