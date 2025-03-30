@@ -17,66 +17,27 @@ export type ServerCallBack = (player: Player,...any?)->()
 
 local RunService = game:GetService('RunService')
 
-local FOLDER_NAME = 'NETWORK EVENTS'
+local FOLDER_NAME = 'Events'
+local REMOTE_FOLDER = game.ReplicatedStorage:WaitForChild('Events',10) :: Folder
+assert(REMOTE_FOLDER,`{FOLDER_NAME} Folder Not Found In Replecated Storage`)
+
 local GENERAL_REMOTE_NAME = 'GENERAL'
+local GENERAL_REMOTE = REMOTE_FOLDER:WaitForChild('GENERAL',10) :: RemoteEvent
+assert(GENERAL_REMOTE,`{GENERAL_REMOTE_NAME} Remote Not Found In {REMOTE_FOLDER}`)
+
 
 local connections: { [ClientCallBack | ServerCallBack]: RBXScriptConnection } = {}
 
-local function CreateFolder(name: string?, location: Instance?): Folder
-	local folder = Instance.new('Folder')
-	folder.Name = name or FOLDER_NAME
-	folder.Parent = location or game.ReplicatedStorage
-	return folder
-end
 
-local function CreateRemote(parent: Instance, name: string?): RemoteEvent
-	local remote = Instance.new('RemoteEvent')
-	remote.Name = name or GENERAL_REMOTE_NAME
-	remote.Parent = parent
-	return remote
-end
 
-if RunService:IsServer() then
-	local folder = CreateFolder()
-	CreateRemote(folder)
-end
+local EventUtil = {}
 
-local Remotes: {[string]: RemoteEvent} = {}
+EventUtil._FOLDER = REMOTE_FOLDER
+EventUtil._KEY = 'Open'
 
-local function FindRemote(folderName: string, remoteName: string): RemoteEvent?
-	local folder: Folder?
-
-	for _, instance: Instance in game.ReplicatedStorage:GetChildren() do
-		if instance:IsA('Folder') and instance.Name == folderName then
-			folder = instance
-			break
-		end
-	end
-	
-	if not folder then return nil end
-	
-	local remote = folder:FindFirstChild(remoteName) 
-	
-	if not remote or not remote:IsA('RemoteEvent') then
-		return nil
-	else
-		return remote
-	end
-end
-
-local function GetRemote(folderName: string, remoteName: string?): RemoteEvent?
-	local remoteName = remoteName or GENERAL_REMOTE_NAME
-	local savedRemote = Remotes[folderName..remoteName] :: RemoteEvent?
-	
-	if savedRemote then
-		return savedRemote
-	else
-		return FindRemote(folderName,remoteName)
-	end
-end
-
-local function ConnectCallBack(eventName: string,remote: RemoteEvent, callback: (any)->())
-	
+--PROTECTED METHIDS
+function EventUtil._ConnectCallBack(eventName: string,remote: RemoteEvent, callback: (any)->())
+	assert(eventName,`No event name given`)
 	if connections[callback] then
 		connections[callback]:Disconnect()
 	end
@@ -103,56 +64,17 @@ local function ConnectCallBack(eventName: string,remote: RemoteEvent, callback: 
 	connections[callback] = connection
 end
 
-local EventUtil = {}
-
-EventUtil._FOLDER_NAME = FOLDER_NAME
-EventUtil._KEY = 'Open'
-
---PRIVIT METHODS
-function EventUtil._ConnectCallBack(remote: RemoteEvent, callback: (any)->(),eventName: string?)
-	local eventName = eventName or EventUtil._KEY
-	ConnectCallBack(eventName,remote,callback)
-end
-function EventUtil._CreateRemote(parent: Instance, name: string): RemoteEvent
-	local remoteAreadyExits = parent:FindFirstChild(name)
-
-	if remoteAreadyExits and remoteAreadyExits:IsA('RemoteEvent') then
-		error(`{name} Remote Aready Exists Inside {parent}`)
-	end
-
-	return CreateRemote(parent,name)
-end
-
-function EventUtil._CreateFolder(folderName: string): Folder
-	local folderLocation = game.ReplicatedStorage:FindFirstChild(FOLDER_NAME) :: Folder
-	assert(folderLocation,`{folderName} not found in ReplicatedStorage`)
-
-	local istanceAlreadyExists = folderLocation:FindFirstChild(folderName)
-
-	if istanceAlreadyExists and istanceAlreadyExists:IsA('Folder') then
-		error(`{folderName} Folder Already Exists`)
-	end
-
-	return CreateFolder(folderName,folderLocation)
-end
-
 
 --- SERVER METHODS ---
 
 -- SERVER: Fires Event To A Player
 function EventUtil.FireClient(eventName: string, player: Player,...)
-	local remote = GetRemote(FOLDER_NAME)
-	assert(remote,`Remote Not Found`)
-	
-	remote:FireClient(player,eventName,...)
+	GENERAL_REMOTE:FireClient(player,eventName,...)
 end
 
 -- SERVER: Receive Events Frome Player
 function EventUtil.OnServer(eventName: string,severCallback: ServerCallBack)
-	local remote = GetRemote(FOLDER_NAME)
-	assert(remote,`Remote Not Found`)
-
-	ConnectCallBack(eventName,remote,severCallback)
+	EventUtil._ConnectCallBack(eventName,GENERAL_REMOTE,severCallback)
 end
 
 
@@ -160,37 +82,18 @@ end
 
 -- CLIENT: Recive Event From SERVER
 function EventUtil.OnClient(eventName: string, clientCallback: ClientCallBack)
-	local remote = GetRemote(FOLDER_NAME)
-	
-	if remote then
-		ConnectCallBack(eventName,remote,clientCallback)
-	else
-		local connection: RBXScriptConnection
-		connection = game.ReplicatedStorage.ChildAdded:Connect(function(child)
-			if child:IsA("Folder") and child.Name == FOLDER_NAME then
-				local foundRemote = GetRemote(FOLDER_NAME)
-				if foundRemote then
-					connection:Disconnect()
-					ConnectCallBack(eventName, foundRemote, clientCallback)
-				end
-			end
-		end)
-	end
+	EventUtil._ConnectCallBack(eventName,GENERAL_REMOTE,clientCallback)
 end
 
 -- CLIENT: Recive Event From SERVER
 function EventUtil.FireServer(eventName: string, ...)
-	local remote = GetRemote(FOLDER_NAME)
-	assert(remote,`Remote Not Found`)
-	
-	remote:FireServer(eventName,...)
+	GENERAL_REMOTE:FireServer(eventName,...)
 end
 
 function EventUtil.Destroy(callback: ClientCallBack | ServerCallBack)
 	if connections[callback] then
 		connections[callback]:Disconnect()
 		connections[callback] = nil
-		print('Removed Connection:',callback)
 	end
 end
 
