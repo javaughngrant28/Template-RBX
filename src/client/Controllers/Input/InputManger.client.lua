@@ -2,10 +2,9 @@
 local NameSpaceEvent = require(game.ReplicatedStorage.Shared.Modules.NameSpaceEvent)
 local InputEvent: NameSpaceEvent.Client = NameSpaceEvent.new('Input',{'Connect','Disconnect'})
 
-local InputBase = require(script.Parent.Parent.Objects.Input.InputBase)
+local InputBase = require(script.Parent.InputBase)
 
 local InputList: {[string]: InputBase.InputBaseType} = {
-    AttackInput = require(script.Parent.Parent.Objects.Input.AttackInput)
 }
 
 local CreateInputObjects: {[RemoteEvent]: InputBase.InputBaseType} = {}

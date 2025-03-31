@@ -40,6 +40,17 @@ function Position.InsatnceInPart(instance: Instance, part: BasePart)
     end
 end
 
+
+function Position.InstanceAtPart(instance: Instance, part: BasePart)
+    local instance = not instance:IsA('Model') and instance or GetRootPartFromModel(instance)
+
+    if instance:IsA("Model") then
+        task.defer(workspace.PivotTo, instance, part.CFrame)
+    else
+        instance.CFrame = part.CFrame
+    end
+end
+
 function Position.AtRandomPartInFolder(instance: Instance, folder: Folder)
     assert(folder and folder:IsA('Folder'), "Invalid folder")
     local part = GetRandomPartFromFolder(folder)
