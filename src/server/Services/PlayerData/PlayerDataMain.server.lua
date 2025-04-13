@@ -2,16 +2,17 @@
 local Players = game:GetService('Players')
 local DataStoreService = game:GetService('DataStoreService')
 
-local DataToInstance = require(game.ReplicatedStorage.Shared.Modules.DataToInstance)
+local DataStore = DataStoreService:GetDataStore('Data0')
+
+local TransformData = require(game.ReplicatedStorage.Shared.Modules.TransformData)
 local PlayerDataAPI = require(game.ServerScriptService.Services.PlayerData.PlayerDataAPI)
-local DefaultPlayerData = require(game.ServerScriptService.Services.PlayerData.DefaultPlayerData)
-
-local DataStore = DataStoreService:GetDataStore('Data_0')
-
+local PlayerDataTemplate = require(game.ServerScriptService.Services.PlayerData.PlayerDataTemplate)
+local PlayerDataInstances = require(game.ServerScriptService.Services.PlayerData.PlayerDataInstances)
+local SyncMathachingData = require(game.ServerScriptService.Services.PlayerData.SyncMathachingData)
 
 
 Players.PlayerAdded:Connect(function(player: Player)
-	-- local success: boolean, value: {any}? = pcall(DataStore.GetAsync, DataStore, player.UserId)
+	-- local success: boolean, value: PlayerDataTemplate.PlayerDataTemplateType? = pcall(DataStore.GetAsync, DataStore, player.UserId)
 	local success = true
 	local value = nil
 
@@ -20,25 +21,39 @@ Players.PlayerAdded:Connect(function(player: Player)
 		return
 	end
 
-	local Data = value or DefaultPlayerData.Template
-	local InstanceData = DefaultPlayerData.GetInstanceDataSyncedWithSavedData(Data)
-	PlayerDataAPI._Set(player.Name, Data)
-	DataToInstance.Fire(player, InstanceData)
+	
+	local Data
+	local templateData = PlayerDataTemplate.Get()
+
+	if value then
+		Data = SyncMathachingData.Fire(value, templateData)
+		else
+			Data = templateData
+	end
+
+	local InstanceData = PlayerDataInstances.Get()
+	local UpdatedInstanceData = SyncMathachingData.Fire(Data,InstanceData)
+
+	PlayerDataAPI.Set(player.Name, Data)
+	TransformData.ToInstance(player, UpdatedInstanceData)
 end)
 
 
 Players.PlayerRemoving:Connect(function(player: Player)
 	local playerName = player.Name
-	local playerData = PlayerDataAPI._Get(playerName)
+	local instanceData = TransformData.FromInstanceToDataType(player)
+	local playerData = PlayerDataAPI.Get(playerName)
 	if playerData == nil then return end
 
-	-- local success: boolean, _ = pcall(DataStore.SetAsync, DataStore, player.UserId,playerData)
+	-- local Data = SyncMathachingData.Fire(instanceData,playerData)
+	-- local success: boolean, _ = pcall(DataStore.SetAsync, DataStore, player.UserId,Data)
 	local success = true
+
 	if success then
 		print('Saved Player Data:', player)
 		else
 			print('Faild To Save PlayerData')
 	end
 
-	PlayerDataAPI._Clear(playerName)
+	PlayerDataAPI.Clear(playerName)
 end)

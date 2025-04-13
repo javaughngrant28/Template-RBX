@@ -1,7 +1,8 @@
 
 
-local defaultData = require(game.ServerScriptService.Services.PlayerData.DefaultPlayerData)
-local LoadedData: {[string]: defaultData.DataTemplate} = {}
+local PlayerDataTemplate = require(game.ServerScriptService.Services.PlayerData.PlayerDataTemplate)
+local Signal = require(game.ReplicatedStorage.Shared.Modules.Signal)
+local LoadedData: {[string]: PlayerDataTemplate.PlayerDataTemplateType} = {}
 
 
 game:BindToClose(function()
@@ -11,31 +12,29 @@ game:BindToClose(function()
 end)
 
 
-local function GetData(playerName: string): defaultData.DataTemplate
+local function GetData(playerName: string): PlayerDataTemplate.PlayerDataTemplateType
     local data =  LoadedData[playerName]
     assert(data,`No Data Found For Player: {playerName}`)
 
     return data
 end
 
+
 local PlayerDataAPI = {}
 
-function PlayerDataAPI._Set(playerName: string, data: defaultData.DataTemplate)
-    local existingData = LoadedData[playerName]
-
-    if existingData then 
+function PlayerDataAPI.Set(playerName: string, data: PlayerDataTemplate.PlayerDataTemplateType)
+    if LoadedData[playerName] then 
         error(`Existing Data Found With Same Matching KeyName: {playerName} - {unpack(existingData)}`) 
     end
-
     LoadedData[playerName] = data
 end
 
-function PlayerDataAPI._Get(playerName: string): defaultData.DataTemplate?
+function PlayerDataAPI.Get(playerName: string): PlayerDataTemplate.PlayerDataTemplateType?
     local existingData = GetData(playerName)
     return existingData
 end
 
-function PlayerDataAPI._Clear(playerName: string)
+function PlayerDataAPI.Clear(playerName: string)
     LoadedData[playerName] = nil
 end
 
