@@ -1,6 +1,6 @@
 local Players = game:GetService('Players')
 
-local Comands = require(game.ServerScriptService.Services.Admin.Comands)
+local Commands = require(script.Parent.Commands)
 
 local groupId = 35325652
 local developerRank = 13
@@ -22,11 +22,11 @@ Players.PlayerAdded:Connect(function(player: Player)
 		local splitText = text:split(' ')
 		local command = splitText[1]:split(prefix)
 
-		if Comands[command[2]] == nil then return end
+		if Commands[command[2]] == nil then return end
 		if not IsDeveloperOrHigher(player) then return end
 
 		table.remove(splitText, 1)
-		Comands[command[2]](player, table.unpack(splitText))
+		Commands[command[2]](player, table.unpack(splitText))
 	end)
 end)
 
