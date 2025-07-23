@@ -23,6 +23,14 @@
       "$className": "ServerScriptService",
       "$path": "src/server"
     },
+
+    "ServerStorage": {
+      "$className": "ServerStorage",
+      "Libraries":{
+        "$path": "src/Libraries",
+        "$className": "Folder"
+      }
+    },
     
     "StarterPlayer": {
       "$className": "StarterPlayer",
