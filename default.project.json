@@ -27,7 +27,7 @@
     "ServerStorage": {
       "$className": "ServerStorage",
       "Libraries":{
-        "$path": "src/Libraries",
+        "$path": "src/libraries",
         "$className": "Folder"
       }
     },
