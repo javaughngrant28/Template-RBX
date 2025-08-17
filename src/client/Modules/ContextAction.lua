@@ -2,7 +2,13 @@ local ContextActionService = game:GetService("ContextActionService")
 local player = game.Players.LocalPlayer
 local keyMapper = require(game.ReplicatedStorage.Shared.Modules.KeyMapper)
 
+type keyType = 'Xbox' | 'PC'
+
 type CallBack = (actionName: string, inputState: Enum.UserInputState) -> ()
+
+type keyTableType = {
+    [keyType]: string
+}
 
 local Actions: { [string]: { { Priority: number, Callback: CallBack } } } = {}
 
@@ -25,28 +31,17 @@ local function HandleAction(actionName: string, inputState: Enum.UserInputState)
 end
 
 
-local function BindKeybind(keybindName: string, priority: number, callback: CallBack)
-    assert(type(keybindName) == "string", "Invalid keybind name")
-    assert(type(callback) == "function", "Callback must be a function")
+local function BindKeybind(index: string, keybindTable: keyTableType, priority: number, callback: CallBack)
+    local inputTable = {
+         keyMapper.GetEnumFromString(keybindTable['Xbox']),
+         keyMapper.GetEnumFromString(keybindTable['PC'])
+    }
 
-    local keybinds = player:FindFirstChild("Keybinds")
-    assert(keybinds, "Keybind Folder Not Found")
+    Actions[index] = Actions[index] or {}
+    table.insert(Actions[index], { Priority = priority or 0, Callback = callback })
 
-    local keybind = keybinds:FindFirstChild(keybindName)
-    assert(keybind, `Keybind Not Found: {keybindName}`)
-
-    local pcValue = keybind:FindFirstChild("PC")
-    local xboxValue = keybind:FindFirstChild("Xbox")
-    assert(pcValue and xboxValue, "Invalid keybind values")
-
-    local xbox = keyMapper.GetEnumFromString(xboxValue.Value) :: Enum.KeyCode
-    local pc = keyMapper.GetEnumFromString(pcValue.Value) :: Enum.KeyCode
-
-    Actions[keybindName] = Actions[keybindName] or {}
-    table.insert(Actions[keybindName], { Priority = priority or 0, Callback = callback })
-
-    if #Actions[keybindName] == 1 then
-        ContextActionService:BindActionAtPriority(keybindName, HandleAction, false, priority or 0, xbox, pc)
+    if #Actions[index] == 1 then
+        ContextActionService:BindActionAtPriority(index, HandleAction, false, priority or 0, table.unpack(inputTable))
     end
 end
 

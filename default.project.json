@@ -29,7 +29,17 @@
       "Libraries":{
         "$path": "src/libraries",
         "$className": "Folder"
-      }
+      },
+       "$ignoreUnknownInstances": true
+    },
+
+    "StarterGui":{
+      "$className": "StarterGui",
+      "Interface":{
+        "$path": "src/interface",
+        "$className":"Folder"
+      },
+      "$ignoreUnknownInstances": true
     },
     
     "StarterPlayer": {
@@ -39,10 +49,6 @@
           "$className": "Folder",
           "$path": "src/client"
         },
-        "Interface":{
-        "$path": "src/interface",
-        "$className":"Folder"
-      },
       "$ignoreUnknownInstances": true
       }
     },
