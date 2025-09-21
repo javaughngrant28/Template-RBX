@@ -3,7 +3,7 @@ local MaidModule = require(game.ReplicatedStorage.Shared.Libraries.Maid)
 local Signal = require(game.ReplicatedStorage.Shared.Libraries.Signal)
 
 local Player = Players.LocalPlayer
-local backpack = Player:WaitForChild('Backpack')
+Player:WaitForChild('Backpack')
 
 local Maid: MaidModule.Maid = MaidModule.new()
 
@@ -20,13 +20,13 @@ local toolTable: {Tool} = {}
 
 local function NewToolCheck(tool: Tool)
     if table.find(toolTable,tool) then return end
-    table.insert(tool)
+    table.insert(toolTable,tool)
     Signals.AddedSignal:Fire(tool)
 end
 
 local function ToolFoundInCharacter(tool: Tool)
     NewToolCheck(tool)
-    Signals.EquippedSignal:Fire()
+    Signals.EquippedSignal:Fire(tool)
 end
 
 local function ToolFoundInBackPack(tool: Tool)
@@ -55,7 +55,7 @@ end
 
 local function CheckForTool(parent: Instance, child: Tool?)
      if not child:IsA('Tool') then return end
-    if parent.IsA('Model') then
+    if parent:IsA('Model') then
         ToolFoundInCharacter(child)
     else
         ToolFoundInBackPack(child)
@@ -76,18 +76,30 @@ local function FindTool(instance: Instance)
 end
 
 
+local function onBackpackAdded(backpack: Backpack)
+    CreateToolAddedConnection(backpack)
+    FindTool(backpack)
+end
 
-FindTool(Player.Backpack)
-CreateToolAddedConnection(Player.Backpack)
+Player.ChildAdded:Connect(function(child)
+    if child:IsA('Backpack') then
+        onBackpackAdded(child)
+    end
+end)
+
+Player.CharacterAdded:Connect(function(character)
+    CreateToolAddedConnection(character)
+end)
 
 if Player.Character then
     CreateToolAddedConnection(Player.Character)
     FindTool(Player.Character)
 end
 
-Player.CharacterAdded:Connect(function(character)
-    CreateToolAddedConnection(character)
-end)
+if Player:FindFirstChild('Backpack') then
+    onBackpackAdded(Player.Backpack)
+end
+
 
 
 return Signals
