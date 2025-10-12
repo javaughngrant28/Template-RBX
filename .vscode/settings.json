@@ -1,5 +1,7 @@
 {
     "robloxLsp.diagnostics.disable": [
         "undefined-type"
-    ]
+    ],
+    "explorer.compactFolders": false,
+    "workbench.colorTheme": "Abyss"
 }
