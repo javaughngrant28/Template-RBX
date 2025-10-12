@@ -5,9 +5,15 @@
 
    "ReplicatedStorage": {
       "$className": "ReplicatedStorage",
+      "Libs": {
+        "$className": "Folder",
+        "$path": "src/libs",
+        "$ignoreUnknownInstances": true
+      },
       "Shared": {
         "$className": "Folder",
-        "$path": "src/shared"
+        "$path": "src/shared",
+        "$ignoreUnknownInstances": true
       },
       "Events": {
         "$className": "Folder",
