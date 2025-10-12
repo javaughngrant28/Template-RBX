@@ -5,7 +5,7 @@
 
    "ReplicatedStorage": {
       "$className": "ReplicatedStorage",
-      "Libs": {
+      "Libraries": {
         "$className": "Folder",
         "$path": "src/libs",
         "$ignoreUnknownInstances": true
