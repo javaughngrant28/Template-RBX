@@ -6,7 +6,7 @@ local ServerStorage = game:GetService("ServerStorage")
 
 
 --// Modules
-local ProfileStore = require(ServerStorage.Libraries.ProfileStore)
+local ProfileStore = require(game.ReplicatedStorage.Libraries.ProfileStore)
 local PlayerDataTemplate = require(script.Parent.PlayerDataTemplate)
 local PlayerLeaderstats = require(script.Parent.PlayerLeaderstats)
 local PlayerDataAttributes = require(script.Parent.PlayerDataAttributes)

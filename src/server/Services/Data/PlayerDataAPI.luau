@@ -1,5 +1,5 @@
 
-local Signal = require(game.ReplicatedStorage.Shared.Libraries.Signal)
+local Signal = require(game.ReplicatedStorage.Libraries.Signal)
 local PlayerProfiles = require(script.Parent.PlayerProfiles)
 local PlayerDataTemplate = require(script.Parent.PlayerDataTemplate)
 
