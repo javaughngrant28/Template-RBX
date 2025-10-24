@@ -18,5 +18,24 @@ function MathUtil.Easing(t: number)
     return MathUtil.Lerp(a,b,t)
 end
 
+function MathUtil.ClosestMultiple(value: number | Vector3, multiple: number)
+	if multiple == 0 then
+		return value
+	end
+
+	if typeof(value) == "number" then
+		return math.floor((value / multiple) + 0.5) * multiple
+	end
+
+	if typeof(value) == "Vector3" then
+		local x = math.floor((value.X / multiple) + 0.5) * multiple
+		local y = math.floor((value.Y / multiple) + 0.5) * multiple
+		local z = math.floor((value.Z / multiple) + 0.5) * multiple
+		return Vector3.new(x, y, z)
+	end
+
+	error("MathUtil.ClosestMultiple: unsupported value type " .. typeof(value))
+end
+
 
 return MathUtil
