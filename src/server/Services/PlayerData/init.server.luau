@@ -7,14 +7,14 @@ local ServerStorage = game:GetService("ServerStorage")
 
 --// Modules
 local ProfileStore = require(game.ReplicatedStorage.Libraries.ProfileStore)
-local PlayerDataTemplate = require(script.Parent.PlayerDataTemplate)
-local PlayerLeaderstats = require(script.Parent.PlayerLeaderstats)
-local PlayerDataAttributes = require(script.Parent.PlayerDataAttributes)
-local PlayerDataAPI = require(script.Parent.PlayerDataAPI)
+local PlayerDataTemplate = require(script.PlayerDataTemplate)
+local PlayerLeaderstats = require(script.PlayerLeaderstats)
+local PlayerDataAttributes = require(script.PlayerDataAttributes)
+local PlayerDataAPI = require(script.PlayerDataAPI)
 
 local playerStoreName = RunService:IsStudio() and "Save_0" or "Data_0"
 local PlayerStore = ProfileStore.New(playerStoreName, PlayerDataTemplate)
-local PlayerProfiles = require(script.Parent.PlayerProfiles) :: {[Player]: typeof(PlayerStore:StartSessionAsync())}
+local PlayerProfiles = require(script.PlayerProfiles) :: {[Player]: typeof(PlayerStore:StartSessionAsync())}
 
 local UpdateAttributeSignal = PlayerDataAPI._GetUpdateAttributeSignal()
 

@@ -1,6 +1,6 @@
 local Players = game:GetService('Players')
 
-local Commands = require(script.Parent.Commands)
+local Commands = require(script.Commands)
 
 local groupId = 35325652
 local developerRank = 13

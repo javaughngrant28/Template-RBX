@@ -15,6 +15,11 @@
         "$path": "src/shared",
         "$ignoreUnknownInstances": true
       },
+      "Packages": {
+         "$className": "Folder",
+        "$path": "Packages"
+      },
+
       "Events": {
         "$className": "Folder",
         "GENERAL": {
@@ -22,7 +27,6 @@
         },
         "$ignoreUnknownInstances": true
       },
-
       "Assets": {
         "$className": "Folder",
         "Models": {
@@ -59,24 +63,6 @@
       "$className": "ServerScriptService",
       "$path": "src/server"
     },
-
-    "ServerStorage": {
-      "$className": "ServerStorage",
-      "Libraries":{
-        "$path": "src/libraries",
-        "$className": "Folder"
-      },
-       "$ignoreUnknownInstances": true
-    },
-
-    "StarterGui":{
-      "$className": "StarterGui",
-      "Interface":{
-        "$path": "src/interface",
-        "$className":"Folder"
-      },
-      "$ignoreUnknownInstances": true
-    },
     
     "StarterPlayer": {
       "$className": "StarterPlayer",
@@ -85,6 +71,11 @@
           "$className": "Folder",
           "$path": "src/client"
         },
+
+        "Interface":{
+          "$path": "src/interface",
+          "$className":"Folder"
+      },
       "$ignoreUnknownInstances": true
       }
     },
